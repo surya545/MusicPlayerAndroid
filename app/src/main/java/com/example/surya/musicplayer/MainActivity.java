@@ -1,6 +1,7 @@
 package com.example.surya.musicplayer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
@@ -90,5 +91,9 @@ public class MainActivity extends Activity {
         mp.stop();
         mp.prepare();
         seekBar.setMax(mp.getDuration());
+    }
+    public void list (View view) {
+        Intent intent = new Intent(this,MainActivity2.class);
+        startActivity(intent);
     }
 }
