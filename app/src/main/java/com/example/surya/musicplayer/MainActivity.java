@@ -26,13 +26,16 @@ public class MainActivity extends Activity {
     public MediaMetadataRetriever mmr;
     String nam;
     public SeekBar seekBar;
+    private final int[] id={R.raw.a};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mp=MediaPlayer.create(MainActivity.this, R.raw.a);
         mmr= new MediaMetadataRetriever();
-        final Uri uri = Uri.parse("android.resource://com.example.surya.musicplayer/raw/a");
+        int pos = getIntent().getIntExtra("pos",0);
+        int status = getIntent().getIntExtra("status",0);
+        final Uri uri = Uri.parse("android.resource://com.example.surya.musicplayer/"+id[pos]);
         mmr.setDataSource(MainActivity.this, uri);
         nam = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
@@ -63,6 +66,10 @@ public class MainActivity extends Activity {
                     }
                 }
         );
+        if(status==1){
+            mp.start();
+            mHandler.postDelayed(ui,0);
+        }
     }
 
     private Handler mHandler = new Handler();
@@ -95,5 +102,11 @@ public class MainActivity extends Activity {
     public void list (View view) {
         Intent intent = new Intent(this,MainActivity2.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mp.stop();
     }
 }
