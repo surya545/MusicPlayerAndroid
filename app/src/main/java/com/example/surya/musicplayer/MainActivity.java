@@ -1,6 +1,8 @@
 package com.example.surya.musicplayer;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,55 +19,61 @@ import android.widget.Toast;
 import android.os.Handler;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.LogRecord;
 
 
 public class MainActivity extends Activity {
 
-    public MediaPlayer mp;
+    public MediaPlayer mp=new MediaPlayer();
     public MediaMetadataRetriever mmr;
     String nam;
     public SeekBar seekBar;
+    //public ImageView coverart = (ImageView)findViewById(R.id.imageView);
     private final int[] id={R.raw.a};
+    ArrayList <HashMap<String,String>> song_list = new ArrayList<HashMap<String,String>>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mp=MediaPlayer.create(MainActivity.this, R.raw.a);
-        mmr= new MediaMetadataRetriever();
         int pos = getIntent().getIntExtra("pos",0);
         int status = getIntent().getIntExtra("status",0);
-        final Uri uri = Uri.parse("android.resource://com.example.surya.musicplayer/"+id[pos]);
-        mmr.setDataSource(MainActivity.this, uri);
-        nam = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-        ImageView imageView = (ImageView)findViewById(R.id.imageView);
-        byte[] art= mmr.getEmbeddedPicture();
-        if(art != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(art,0,art.length);
-            imageView.setImageBitmap(bitmap);
-        }
-        seekBar = (SeekBar)findViewById(R.id.seekBar);
-        seekBar.setMax(mp.getDuration());
-        seekBar.setOnSeekBarChangeListener(
-                new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if (fromUser){
-                            mp.seekTo(progress);
+        newfile m2 = new newfile();
+        song_list=m2.getSongs();
+        try {
+            mp.setDataSource(song_list.get(pos).get("Path"));
+            mp.prepare();
+            nam = song_list.get(pos).get("Name");
+            seekBar = (SeekBar)findViewById(R.id.seekBar);
+            seekBar.setMax(mp.getDuration());
+            seekBar.setOnSeekBarChangeListener(
+                    new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            if (fromUser) {
+                                mp.seekTo(progress);
+                            }
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+
                         }
                     }
+            );
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+        catch (Exception e){
 
-                    }
+        }
 
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                }
-        );
         if(status==1){
             mp.start();
             mHandler.postDelayed(ui,0);
