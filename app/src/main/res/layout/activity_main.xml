@@ -47,26 +47,84 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:src="@drawable/art"
-        android:layout_above="@+id/imageButton" />
+        android:layout_above="@+id/imageButton"
+        android:layout_alignRight="@+id/imageButton3"
+        android:layout_alignEnd="@+id/imageButton3"
+        android:layout_alignLeft="@+id/imageButton2"
+        android:layout_alignStart="@+id/imageButton2" />
 
     <SeekBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/seekBar"
         android:layout_alignBottom="@+id/imageView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:progressTint="@color/colorPrimary"
+        android:thumbTint="@color/colorPrimary"/>
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="List"
+        android:id="@+id/imageButton4"
         android:onClick="list"
-        android:id="@+id/button"
+        android:layout_toRightOf="@+id/imageView"
+        android:src="@drawable/listt"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@null"
+        android:layout_alignTop="@+id/imageView" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton5"
+        android:onClick="next"
+        android:layout_below="@+id/seekBar"
+        android:layout_alignLeft="@+id/imageButton4"
+        android:layout_alignStart="@+id/imageButton4"
+        android:src="@drawable/next"
+        android:background="@null"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton6"
+        android:src="@drawable/previous"
+        android:onClick="prev"
+        android:background="@null"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_toLeftOf="@+id/imageButton2"
+        android:layout_toStartOf="@+id/imageButton2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Music Player"
+        android:id="@+id/textView"
+        android:textColor="#0cd9b0"
+        android:layout_marginTop="49dp"
+        android:layout_below="@+id/imageButton4"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Surya"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=""
+        android:id="@+id/songnames"
+        android:textColor="#000"
+        android:layout_above="@+id/seekBar"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
 
@@ -31,14 +32,13 @@ public class MainActivity extends Activity {
     public MediaMetadataRetriever mmr;
     String nam;
     public SeekBar seekBar;
-    //public ImageView coverart = (ImageView)findViewById(R.id.imageView);
-    private final int[] id={R.raw.a};
+    int pos;
     ArrayList <HashMap<String,String>> song_list = new ArrayList<HashMap<String,String>>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        int pos = getIntent().getIntExtra("pos",0);
+        pos = getIntent().getIntExtra("pos",0);
         int status = getIntent().getIntExtra("status",0);
         newfile m2 = new newfile();
         song_list=m2.getSongs();
@@ -68,6 +68,18 @@ public class MainActivity extends Activity {
                         }
                     }
             );
+            mmr = new MediaMetadataRetriever();
+            ImageView imageView = (ImageView)findViewById(R.id.imageView);
+            mmr.setDataSource(song_list.get(pos).get("Path"));
+            byte[] art = mmr.getEmbeddedPicture();
+            if(art!=null){
+                Bitmap bitmap = BitmapFactory.decodeByteArray(art,0,art.length);
+                imageView.setImageBitmap(bitmap);
+            }
+            if (status==1){
+                mp.start();
+                mHandler.postDelayed(ui,0);
+            }
 
         }
         catch (Exception e){
@@ -76,7 +88,9 @@ public class MainActivity extends Activity {
 
         if(status==1){
             mp.start();
-            mHandler.postDelayed(ui,0);
+            mHandler.postDelayed(ui, 0);
+            TextView t = (TextView) findViewById(R.id.songnames);
+            t.setText(nam + "");
         }
     }
 
@@ -87,6 +101,19 @@ public class MainActivity extends Activity {
         public void run() {
             if(mp!=null) {
                 seekBar.setProgress(mp.getCurrentPosition());
+                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        if(pos < song_list.size()-1) {
+                            Intent intent = new Intent(MainActivity.this,MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("pos",pos+1);
+                            intent.putExtra("status", 1);
+                            startActivity(intent);
+                        }
+                    }
+                });
                 mHandler.postDelayed(this,100);
             }
         }
@@ -94,8 +121,9 @@ public class MainActivity extends Activity {
 
     public void Play (View view) {
         mp.start();
-        mHandler.postDelayed(ui,0);
-        Toast.makeText(this, " "+nam , Toast.LENGTH_SHORT).show();
+        mHandler.postDelayed(ui, 0);
+        TextView t = (TextView) findViewById(R.id.songnames);
+        t.setText(nam + "");
     }
     public void Pause (View view) {
         if (mp.isPlaying()) {
@@ -116,5 +144,20 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mp.stop();
+    }
+
+    public void next (View view) {
+        Intent intent = new Intent(MainActivity.this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("pos",pos+1);
+        intent.putExtra("status", 1);
+        startActivity(intent);
+    }
+    public void prev (View view) {
+        Intent intent = new Intent(MainActivity.this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("pos",pos-1);
+        intent.putExtra("status", 1);
+        startActivity(intent);
     }
 }
